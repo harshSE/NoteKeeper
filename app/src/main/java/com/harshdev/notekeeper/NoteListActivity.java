@@ -11,11 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 public class NoteListActivity extends AppCompatActivity {
+
+    private ArrayAdapter<NoteInfo> notesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +29,7 @@ public class NoteListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(NoteListActivity.this, NoteActivity.class));
             }
         });
 
@@ -42,7 +42,7 @@ public class NoteListActivity extends AppCompatActivity {
 
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
 
-        ArrayAdapter<NoteInfo> notesAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, notes);
+        notesAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, notes);
 
         notesView.setAdapter(notesAdapter);
 
@@ -51,11 +51,15 @@ public class NoteListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 Intent intent = new Intent(NoteListActivity.this, NoteActivity.class);
-                NoteInfo noteInfo = (NoteInfo) notesView.getItemAtPosition(position);
-
-                intent.putExtra(NoteActivity.NOTE_INFO, noteInfo);
+                intent.putExtra(NoteActivity.NOTE_POSITION, position);
                 startActivity(intent);
             };
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        notesAdapter.notifyDataSetChanged();
     }
 }
