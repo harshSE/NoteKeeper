@@ -3,8 +3,10 @@ package com.harshdev.notekeeper;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,11 +21,17 @@ public class NoteActivity extends AppCompatActivity {
 
     public static final String NOTE_POSITION = NoteActivity.class.getPackage().getName() + "NOTE_POSITION";
     private static final int NO_POSITION_SET = -1;
+    private final DataManager dataManager;
+    private NoteActivityViewModel noteActivityViewModel;
     private Spinner courseSpinner;
     private EditText titleTextField;
     private EditText textNoteTextField;
     private NoteInfo currentNote;
     private boolean isCancelled;
+
+    public NoteActivity() {
+        dataManager = DataManager.getInstance();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +40,20 @@ public class NoteActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        ViewModelProvider viewModelProvider = new ViewModelProvider(getViewModelStore(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()));
+
+        noteActivityViewModel = viewModelProvider.get(NoteActivityViewModel.class);
+
+        if(Objects.nonNull(savedInstanceState)) {
+            noteActivityViewModel.restoreState(savedInstanceState);
+        }
+
         courseSpinner = findViewById(R.id.course);
 
 
-        List<CourseInfo> courses = DataManager.getInstance().getCourses();
+        List<CourseInfo> courses = dataManager.getCourses();
 
         ArrayAdapter<CourseInfo> courseAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
         courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -48,12 +66,15 @@ public class NoteActivity extends AppCompatActivity {
 
         currentNote = readDisplayStateValue();
         if(Objects.nonNull(currentNote)) {
+            noteActivityViewModel.setOriginalValueOfText(currentNote.getText());
+            noteActivityViewModel.setOriginalValueOfTitle(currentNote.getTitle());
+            noteActivityViewModel.setOriginalValueOfCourseId(currentNote.getCourse().getCourseId());
             displayNote(currentNote);
         }
     }
 
     private void displayNote(NoteInfo noteInfo) {
-        courseSpinner.setSelection(DataManager.getInstance().getCourses().indexOf(noteInfo.getCourse()));
+        courseSpinner.setSelection(dataManager.getCourses().indexOf(noteInfo.getCourse()));
         titleTextField.setText(noteInfo.getTitle());
         textNoteTextField.setText(noteInfo.getText());
     }
@@ -61,7 +82,7 @@ public class NoteActivity extends AppCompatActivity {
     private NoteInfo readDisplayStateValue() {
         Intent intent = getIntent();
         int position = intent.getIntExtra(NOTE_POSITION, NO_POSITION_SET);
-        return position != NO_POSITION_SET ?  DataManager.getInstance().getNotes().get(position): null;
+        return position != NO_POSITION_SET ?  dataManager.getNotes().get(position): null;
     }
 
     @Override
@@ -110,6 +131,34 @@ public class NoteActivity extends AppCompatActivity {
         super.onPause();
         if(!isCancelled) {
             saveNotes();
+        } else {
+            restoreValue();
+        }
+    }
+
+    private void restoreValue() {
+        if (Objects.isNull(currentNote)) {
+            return;
+        }
+
+        currentNote.setCourse(dataManager.getCourse(noteActivityViewModel.getOriginalValueOfCourseId()));
+        currentNote.setTitle(noteActivityViewModel.getOriginalValueOfTitle());
+        currentNote.setText(noteActivityViewModel.getOriginalValueOfText());
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(Objects.nonNull(outState)) {
+            noteActivityViewModel.saveState(outState);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(Objects.nonNull(savedInstanceState)) {
+            noteActivityViewModel.restoreState(savedInstanceState);
         }
     }
 
@@ -123,7 +172,7 @@ public class NoteActivity extends AppCompatActivity {
             if(Objects.nonNull(course)
                     && Objects.nonNull(title) && !title.isEmpty()) {
                 NoteInfo newNote = new NoteInfo(course, title, text);
-                DataManager.getInstance().getNotes().add(newNote);
+                dataManager.getNotes().add(newNote);
             }
 
         } else {
