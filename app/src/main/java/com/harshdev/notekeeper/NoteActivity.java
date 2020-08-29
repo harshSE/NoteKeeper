@@ -66,11 +66,15 @@ public class NoteActivity extends AppCompatActivity {
 
         currentNote = readDisplayStateValue();
         if(Objects.nonNull(currentNote)) {
-            noteActivityViewModel.setOriginalValueOfText(currentNote.getText());
-            noteActivityViewModel.setOriginalValueOfTitle(currentNote.getTitle());
-            noteActivityViewModel.setOriginalValueOfCourseId(currentNote.getCourse().getCourseId());
+            saveOriginalNotes();
             displayNote(currentNote);
         }
+    }
+
+    private void saveOriginalNotes() {
+        noteActivityViewModel.setOriginalValueOfText(currentNote.getText());
+        noteActivityViewModel.setOriginalValueOfTitle(currentNote.getTitle());
+        noteActivityViewModel.setOriginalValueOfCourseId(currentNote.getCourse().getCourseId());
     }
 
     private void displayNote(NoteInfo noteInfo) {
@@ -80,9 +84,13 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private NoteInfo readDisplayStateValue() {
-        Intent intent = getIntent();
-        int position = intent.getIntExtra(NOTE_POSITION, NO_POSITION_SET);
+        int position = getPosition();
         return position != NO_POSITION_SET ?  dataManager.getNotes().get(position): null;
+    }
+
+    private int getPosition() {
+        Intent intent = getIntent();
+        return intent.getIntExtra(NOTE_POSITION, NO_POSITION_SET);
     }
 
     @Override
@@ -106,9 +114,33 @@ public class NoteActivity extends AppCompatActivity {
         } else if(id == R.id.action_cancel) {
             this.isCancelled = true;
             finish();
+        } else if (id == R.id.action_next) {
+            nextItem();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void nextItem() {
+        saveNotes();
+
+        this.currentNote = getNextNote();
+
+        saveOriginalNotes();
+        displayNote(currentNote);
+    }
+
+    private NoteInfo getNextNote() {
+        int position = dataManager.findNote(currentNote);
+        if(isEndOfList(position)){
+            return dataManager.getNotes().get(0);
+        } else {
+            return dataManager.getNotes().get(++position);
+        }
+    }
+
+    private boolean isEndOfList(int position) {
+        return position == DataManager.getInstance().getNotes().size() - 1;
     }
 
     private void sendEmail() {

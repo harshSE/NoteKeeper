@@ -4,9 +4,17 @@
       tools:context="com.harshdev.notekeeper.NoteActivity">
     <item
         android:id="@+id/action_cancel"
-        android:title="cancel" />
+        android:icon="@android:drawable/ic_menu_revert"
+        android:title="@android:string/cancel"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_next"
+        android:icon="@android:drawable/ic_media_next"
+        android:orderInCategory="100"
+        android:title="@string/action_next"
+        app:showAsAction="ifRoom|withText" />
     <item android:id="@+id/action_send_email"
           android:title="@string/action_send_email"
-          android:orderInCategory="100"
+          android:orderInCategory="101"
           app:showAsAction="never"/>
 </menu>
