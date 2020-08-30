@@ -1,4 +1,4 @@
-package com.harshdev.notekeeper;
+package com.harshdev.notekeeper.ui;
 
 import android.os.Bundle;
 
