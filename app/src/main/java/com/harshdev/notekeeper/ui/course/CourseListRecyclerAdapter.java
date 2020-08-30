@@ -1,4 +1,4 @@
-package com.harshdev.notekeeper.ui.gallery;
+package com.harshdev.notekeeper.ui.course;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -29,7 +29,7 @@ public class CourseListRecyclerAdapter extends RecyclerView.Adapter<CourseListRe
     @NonNull
     @Override
     public CourseItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.item_note_list, parent, false);
+        View view = layoutInflater.inflate(R.layout.item_course_list, parent, false);
         return new CourseItemViewHolder(view);
     }
 

@@ -1,4 +1,4 @@
-package com.harshdev.notekeeper.ui.home;
+package com.harshdev.notekeeper.ui.notes;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.harshdev.notekeeper.ui.NoteActivity;
+import com.harshdev.notekeeper.ui.note.NoteActivity;
 import com.harshdev.notekeeper.data.NoteInfo;
 import com.harshdev.notekeeper.R;
 

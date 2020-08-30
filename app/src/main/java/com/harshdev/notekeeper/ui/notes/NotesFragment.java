@@ -1,4 +1,4 @@
-package com.harshdev.notekeeper.ui.gallery;
+package com.harshdev.notekeeper.ui.notes;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,36 +7,39 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.harshdev.notekeeper.data.CourseInfo;
 import com.harshdev.notekeeper.data.DataManager;
+import com.harshdev.notekeeper.data.NoteInfo;
 import com.harshdev.notekeeper.R;
 
 import java.util.List;
 
-public class CoursesFragment extends Fragment {
+public class NotesFragment extends Fragment {
 
-    private CourseListRecyclerAdapter adapter;
+
+    private NoteItemListRecyclerAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
         initializeDisplayContent(root);
+
         return root;
     }
 
-    private void initializeDisplayContent(View root) {
+    private void initializeDisplayContent(View container) {
 
-        RecyclerView notesView = root.findViewById(R.id.list_courses);
+        RecyclerView notesView = container.findViewById(R.id.list_items);
 
-        List<CourseInfo> notes = DataManager.getInstance().getCourses();
+        List<NoteInfo> notes = DataManager.getInstance().getNotes();
 
-        notesView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        notesView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new CourseListRecyclerAdapter(notes,getContext());
+
+        adapter = new NoteItemListRecyclerAdapter(notes,getContext());
         notesView.setAdapter(adapter);
     }
 
