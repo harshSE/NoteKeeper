@@ -1,6 +1,8 @@
 package com.harshdev.notekeeper.ui.note;
 
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,12 +22,12 @@ import com.harshdev.notekeeper.R;
 import com.harshdev.notekeeper.data.CourseInfo;
 import com.harshdev.notekeeper.data.DataManager;
 import com.harshdev.notekeeper.data.NoteInfo;
-import com.harshdev.notekeeper.db.NoteKeeperDatabaseContract.CourseInfoEntry;
-import com.harshdev.notekeeper.db.NoteKeeperOpenHelper;
+import com.harshdev.notekeeper.persistance.NoteKeeperDatabaseContract.CourseInfoEntry;
+import com.harshdev.notekeeper.persistance.NoteKeeperOpenHelper;
 
 import java.util.Objects;
 
-public class NoteActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String NOTE_ID = NoteActivity.class.getPackage().getName() + "NOTE_POSITION";
     private static final int NO_ID_SET = -1;
@@ -139,6 +141,7 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private NoteInfo loadNoteInfo(int id) {
+        getLoaderManager().initLoader(0, null, this);
         return dataManager.getNoteInfo(id, openHelper);
     }
 
@@ -281,5 +284,20 @@ public class NoteActivity extends AppCompatActivity {
     protected void onDestroy() {
         openHelper.close();
         super.onDestroy();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

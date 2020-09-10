@@ -7,21 +7,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.harshdev.notekeeper.data.CourseInfo;
 import com.harshdev.notekeeper.R;
+import com.harshdev.notekeeper.persistance.CourseInfo;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CourseListRecyclerAdapter extends RecyclerView.Adapter<CourseListRecyclerAdapter.CourseItemViewHolder> {
 
-    private final List<CourseInfo> courses;
+    private @Nullable List<CourseInfo> courses;
     private final Context context;
     private final LayoutInflater layoutInflater;
 
-    public CourseListRecyclerAdapter(List<CourseInfo> courses, Context context) {
-        this.courses = courses;
+    public CourseListRecyclerAdapter(Context context) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -40,7 +41,16 @@ public class CourseListRecyclerAdapter extends RecyclerView.Adapter<CourseListRe
 
     @Override
     public int getItemCount() {
-        return courses.size();
+        if(Objects.isNull(courses)) {
+            return 0;
+        } else {
+            return courses.size();
+        }
+    }
+
+    public void setCourses(List<CourseInfo> courses) {
+        this.courses = courses;
+        notifyDataSetChanged();
     }
 
     public static class CourseItemViewHolder extends RecyclerView.ViewHolder {

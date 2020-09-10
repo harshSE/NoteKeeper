@@ -4,9 +4,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
-import com.harshdev.notekeeper.db.NoteKeeperDatabaseContract.CourseInfoEntry;
-import com.harshdev.notekeeper.db.NoteKeeperDatabaseContract.NoteInfoEntry;
-import com.harshdev.notekeeper.db.NoteKeeperOpenHelper;
+import com.harshdev.notekeeper.persistance.NoteKeeperDatabaseContract.CourseInfoEntry;
+import com.harshdev.notekeeper.persistance.NoteKeeperDatabaseContract.NoteInfoEntry;
+import com.harshdev.notekeeper.persistance.NoteKeeperOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
