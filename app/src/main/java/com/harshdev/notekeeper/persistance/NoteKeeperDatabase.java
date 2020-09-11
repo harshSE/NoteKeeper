@@ -9,6 +9,8 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Database(entities = {CourseInfo.class, NoteInfo.class}, version = 1)
 public abstract class NoteKeeperDatabase extends RoomDatabase {
@@ -19,6 +21,10 @@ public abstract class NoteKeeperDatabase extends RoomDatabase {
     public abstract NoteInfoDao getNoteInfoDao();
 
     public static volatile NoteKeeperDatabase noteKeeperDatabase;
+
+    private static final int NUMBER_OF_THREADS = 4;
+    static final ExecutorService databaseWriteExecutor =
+            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     static NoteKeeperDatabase getInstance(final Context context) {
 

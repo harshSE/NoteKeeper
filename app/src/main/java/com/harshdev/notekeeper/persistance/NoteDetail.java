@@ -38,4 +38,7 @@ public class NoteDetail {
         return course.getTitle();
     }
 
+    public CourseInfo getCourse() {
+        return course;
+    }
 }

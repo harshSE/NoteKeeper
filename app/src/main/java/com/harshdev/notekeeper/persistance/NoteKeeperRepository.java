@@ -33,4 +33,28 @@ public class NoteKeeperRepository {
     public LiveData<List<NoteDetail>> getAllNoteDetails() {
         return noteInfoDao.getAllNoteDetails();
     }
+
+    public LiveData<NoteDetail> getNoteDetail(int id) {
+        return noteInfoDao.getNoteDetail(id);
+    }
+
+    public void save(final NoteInfo noteInfo) {
+        db.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                noteInfoDao.insert(noteInfo);
+            }
+        });
+    }
+
+    public void update(final NoteInfo noteInfo) {
+
+        db.databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                noteInfoDao.update(noteInfo);
+            }
+        });
+
+    }
 }
